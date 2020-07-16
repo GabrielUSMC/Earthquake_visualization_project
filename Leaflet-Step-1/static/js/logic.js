@@ -29,12 +29,12 @@ function chooseColor(mag) {
         return 'darkgoldenrod';
     }
     else if (mag <= 5) {
-        return 'burlywood';
+        return 'saddlebrown';
     }
     else {
         return 'red';
     }
-  }
+}
 
 d3.json(earthquake_url, function(response) {
 
@@ -57,5 +57,32 @@ d3.json(earthquake_url, function(response) {
         }).bindPopup("Location: " + data[i].properties.place + "<br>Magnitude: " + data[i].properties.mag + "<br>Time: " + Date(data[i].properties.time)).addTo(myMap);
       }
     }
+
+    // Set up the legend
+    var legend = L.control({ position: "bottomright" });
+    legend.onAdd = function() {
+        var div = L.DomUtil.create("div", "info legend");
+        var limits = ['0-1', '1-2', '2-3', '3-4', '4-5', '5+'];
+        var colors = ['lime', 'greenyellow', 'gold', 'darkgoldenrod', 'saddlebrown', 'red'];
+        var labels = [];
+
+        // // Add min & max
+        var legendInfo = "<h1>Magnitude</h1>" +
+        "<div class=\"labels\">" +
+        "</div>";
+
+        div.innerHTML = legendInfo;
+
+        limits.forEach(function(limit, index) {
+            labels.push("<li style=\"background-color: " + colors[index] + "\">" + limits[index] + "</li>");
+        });
+
+        div.innerHTML += "<ul>" + labels.join("") + "</ul>";
+        return div;
+    };
+
+    // Adding legend to the map
+    legend.addTo(myMap);
   
-  });
+});
+
